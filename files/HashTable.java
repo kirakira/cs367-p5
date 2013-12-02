@@ -76,5 +76,6 @@ public class SimpleHashMap<K, V> {
      * if there was no mapping for <tt>key</tt>.
      */
     public V remove(Object key) {
+        // TODO
     }
 }
