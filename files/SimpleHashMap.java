@@ -4,27 +4,29 @@ import java.util.List;
  * This class implements a generic map based on hashtables using chaining
  * as its collision resolution.
  *
- * A map is a data structure that creates a key-value mapping. Keys are
+ * <p>A map is a data structure that creates a key-value mapping. Keys are
  * unique in the map. That is, there cannot be more than one value associated
- * with a same key. However, two keys can map to a same value.
+ * with a same key. However, two keys can map to a same value.</p>
  *
+ * <p>
  * The <tt>SimpleHashMap</tt> class takes two generic parameters, <tt>K</tt> and
  * <tt>V</tt>, standing for the types of keys and values respectively. Items
  * are stored in a hashtable. Hash values are computed from the
- * <tt>hashCode()</tt> method of the <tt>K</tt> type objects.
+ * <tt>hashCode()</tt> method of the <tt>K</tt> type objects.</p>
  *
+ * <p>
  * Chains for each bucket are implemented using Java's <tt>LinkedList</tt>.
  * When a hashtable is created, its initial table size and maximum load factor
  * is set to <tt>11</tt> and <tt>0.75</tt>. The hashtable can hold arbitrarily
  * many key-value pairs and resizes itself whenever it reaches its maximum load
- * factor.
+ * factor.</p>
  *
- * <tt>null</tt> values are not allowed in <tt>SimpleHashMap</tt>. You can
+ * <p><tt>null</tt> values are not allowed in <tt>SimpleHashMap</tt>. You can
  * assume that <tt>equals()</tt> and <tt>hashCode()</tt> on <tt>K</tt> are well
  * defined. That is, if for two non-<tt>null</tt> keys <tt>k1</tt> and
  * <tt>k2</tt>, if <tt>k1.equals(k2)</tt>, then
  * <tt>k1.hashCode() == k2.hashCode()</tt>. Do not assume in the other
- * direction.
+ * direction.</p>
  */
 public class SimpleHashMap<K, V> {
 
