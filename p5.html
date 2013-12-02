@@ -1,0 +1,273 @@
+<!--
+  Programming Assignment 5 Write-up
+  Version: 0.2b
+  Date Changed: 11/27/13
+  Last Edited By: Nick Burek
+  
+  Change Log:
+    11/26/13 - First Version Release (0.1) for review
+    11/27/13 - Modifying the document to use LinkedList for chaining instead of ArrayList
+  
+-->
+<content for="title">CS 367, Programming Assignment 5</content>
+
+<content for="top">
+<h2>CS 367 Programming Assignment 5</h2>
+<font size="+1" color="#990000"><b>DUE by 10:00 PM on Sunday, December 15th</b><br></font>
+
+<br>
+<a href="#Announcements">P5 Announcements</a> |
+<a href="#Overview">Overview</a> |
+<a href="#Specifications">Specifications</a> |
+<a href="#Steps">Steps</a> |
+<a href="#Submission">Submission</a>
+</content>
+
+
+<content for="main">
+
+<div class="announcements">
+
+<a name="Announcements"></a>
+<h2>P5 Announcements</h2>
+
+<p>Corrections, clarifications, and other announcements regarding this programming assignment will be found below.</p>
+
+<ul>
+  <li><b>12/2/2013:</b> Program assigned.</li>
+</ul>
+
+
+</div>
+<div>
+
+<a name="Overview"></a>
+<h2>Overview</h2>
+
+<h3>Description</h3>
+<p>
+In this assignment you will be writing a Java program that indexes a web page to find the most 
+frequently used words on the page. The main program will read in the contents of a file and keep a 
+counter of how often each word appears using a HashTable data structure. 
+The program will then print out some basic statistics about the Hashtable followed by a list of the 
+top 11 most frequently used words in the list.  
+</p>
+  
+<h3>Goals</h3>
+
+  <p>The goals of this assignment are to:</p>
+  <ul>
+    <li>Gain experience with hashing.</li>
+    <li>Gain experience resizing a data structure.</li>
+    <li>Gain experience using comparators.</li>
+    <li>Gain experience using javadoc documentation to get information about a class.</li>
+  </ul>
+
+
+</div>
+<div>
+
+<a name="Specifications"></a>
+<h2>Specifications</h2>
+
+<h3>The <tt>HashTable</tt> Class</h3>
+
+<p>The <tt><a href="assignments/p5/javadocs/HashTable.html">javadoc for the HashTable</a></tt> class
+gives information about the methods you need to implement. You will implement each method as described in the javadocs.
+A skeleton class is provided for you; see <tt><a href="assignments/p5/files/HashTable.java">HashTable.java</a></tt>.
+Additionally, your hashtable <b>must</b>:
+<ul>
+  <li>be implemented using an array,</li>
+  <li>handle collisions using chaining, and</li>
+  <li>use <tt>LinkedList</tt>s to implement the chained bucket hashing.</li>
+</ul> 
+
+<p>The constructor for the hashtable takes two arguments.
+The first is the initial size
+of the hashtable.  The second is a value that indicates the maximum <i>load factor</i>
+of the table.  The load factor is defined to be the number of items in the hashtable 
+divided by the size of the hashtable.  The maximum load factor is a measure of how full the
+hashtable is allowed to get before it will be resized.  For example, a maximum load factor of 0.8
+means that, under ideal hashing (when
+there are no collisions), the hashtable is allowed to get up to 80% full before it will be resized.</p>
+
+
+<p>The index you will use to determine where to store an entry will be very simple.
+You will call the <tt>hashCode()</tt> method on the item you need to insert or
+lookup and modulo this value by the table size (to make sure it is a valid index).
+One potential problem is the fact that <tt>hashCode()</tt> can return a negative
+value.  For example, when you take a modulo of a negative value, the result is a 
+negative value.  An easy way to deal with this is to 
+take the absolute value of the hashcode.
+<!--check the value of 
+<tt>hashCode()</tt> modulo table size.  If it is negative, simply add table size to
+the result.  This will give you a positive value between 0 and <i>table size-1</i>.
+-->
+</p>
+
+<p>The <tt>dump</tt> method dumps (i.e., prints) the values in the hashtable to
+a given output source.  It works by going 
+through the indices in the hashtable in order (0, 1, 2, ... up to <i>table size-1</i>).
+At each index it prints the the index followed by the values stored at that index.
+The values at each index should be printed in the order they are stored in the 
+<tt>LinkedList</tt>.  
+All the output will go to the <tt>PrintStream</tt> passed as an argument.  </p>
+
+<p>The <tt>topEleven</tt> method prints the values in the hashtable to
+a given output source.  It works by going through the entire HashTable and finding the 11 entries
+with the greatest value and printing them. Each word should be printed on its own line.
+If there are less than 11 entries then you would print 
+them all. If there are multiple items with the same value then they should be printed out in the 
+order that they are stored in the HashTable. This function should never print more than 11 values. 
+Order will be determined by using the compare function from the Comparator class that is passed into 
+the topEleven function. </p>
+
+<p>The <tt>displayStats</tt> method will display some statistics about the current
+state of your hashtable.  When it is called it should display: the current table size,
+the number of items in the table, the current load factor, 
+the length of the largest chain (i.e., the maximum 
+number of items stored at any one index), the number of chains of length 0
+(i.e., the number of "empty" indices), and the average length of the chains of length
+greater than 0.
+All the output will go to the <tt>PrintStream</tt> passed as an argument. </p>
+
+
+<p>Note the following for the HashTable class:</p>
+<ul>
+  <li>Duplicates are allowed. This makes adding an item faster since you 
+  don't have to check if it is already there.</li>
+  <li><tt>lookup</tt> returns an item (of the generic type <tt>T</tt>), not a boolean.  That is, if it
+  finds the item, it returns it; if not, it returns <tt>null</tt>.  The item
+  may be in the table more than once, however, <tt>lookup</tt> should just return the 
+  first one it finds at a given index. </li>
+  <li><tt>delete</tt> returns an item (of the generic type <tt>T</tt>), not a boolean.  That is, if it
+  finds the item, it returns it (and removes it); if not, it returns <tt>null</tt>.  
+  Note that the item may be in the table more than once.  However, <tt>delete</tt> 
+  should just remove and return the first one it finds at a given index. </li>
+  <li><a name="excUpdate"></a>The constructors of the <tt>Hashtable</tt> throw <tt>IllegalArgumentException</tt>s if the parameters
+  passed to them are not valid (see 
+  <a href="assignments/p5/javadocs/HashTable.html#HashTable(int, double)"><tt>HashTable</tt> constructor documentation</a>).</li>
+  <li>Your code can (and should) use methods from the <tt>Object</tt> class, such as
+  <tt>equals</tt>, <tt>hashCode</tt>, and <tt>toString</tt>. </li>
+  <li>You don't ever need to shrink your hashtable.</li>
+</ul>
+
+<p>The 
+<a href="http://docs.oracle.com/javase/6/docs/api/java/util/LinkedList.html"><tt>LinkedList</tt>
+javadoc</a> lists (and describes) all the <tt>LinkedList</tt> methods.  You can use
+any of the <tt>LinkedList</tt> methods, so be sure to 
+look over the documentation carefully to determine which <tt>LinkedList</tt> methods
+you will want to use in this program.</p>
+
+
+<h3>The <tt>WordFrequencyMain</tt> Class</h3>
+
+<p>The WordFrequencyMain class will contain the main() function that is the entry point for your 
+application. This will be where the file is read in and words are counted. The input file will 
+contain only words, spacing, and punctuation. We will provide a function for you that will read in a 
+line from the file, remove all punctuation, convert it to lowercase, and return an array of all the 
+words on that line.
+
+After counting the occurence of all the words in the file, your program should print out the statistics 
+provided by the HashTable function as well as the top 11 most frequent words that appeared in the 
+file. 
+
+A skeleton class is provided for you; see <tt><a href="assignments/p5/files/WordFrequencyMain.java">WordFrequencyMain.java</a></tt>.
+
+</p>
+
+<h3> The <tt>Word</tt> Class</h3>
+
+<p>The Word class is a container class that will store a String for the word and an integer counting 
+the frequency. It will need to override the hashCode() function to properly return a hash of the 
+word. It will also need to override the toString() function to use the format "( word, count)". 
+The rest of the implementation details for the Word class are left for you to decide. </p>
+
+<h3> The <tt>WordComparator</tt> Class</h3>
+
+<p>The WordComparator class should extend from Comparator<Word>. The WordComparator class is used 
+to compare two Word objects to each other. Details about the 
+<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Comparator.html">Comparator<T> class can 
+be found in the javadocs.</a></p>
+
+</div>
+<div>
+
+<a name="Steps"></a>
+<h2>Steps</h2>
+
+<p>After you have read this program page and given thought to the problem
+we suggest the following steps:</p>
+
+<ol>
+  <li>If you are working with a partner, review the
+      <a href="?r=coursework#pp">rules for pair programming</a>.</li>
+  <li>Review these <a href="?r=styleGuide">style</a> and
+      <a href="?r=commentingGuide">commenting</a> standards that are used to
+      evaluate your program.</li>
+  <li>You may use the Java development environment of your choice in CS 367.
+      <em><b>However, all programs must compile and run on the lab computers
+      for grading.</b></em> If you are going to use the CS
+      <a href="?r=computerLabs">lab computers</a>, we recommend that you use
+      Eclipse. You may want to review the
+      <a href="http://pages.cs.wisc.edu/%7Ecs302/labs/EclipseTutorial/" target="_tab">Eclipse
+      tutorial</a> to learn the basics. Note that on the Linux lab computers,
+      you should enter "<tt>eclipse&amp;</tt>" at the prompt instead of what
+      is described in the tutorial.</li>
+  <li>Download the following files to your programming assignment 5	 
+directory:
+      <ul>
+      <li><a href="assignments/p4/files/WordFrequencyMain.java"><tt>WordFrequencyMain.java</tt></a></li>
+      <li><a href="assignments/p4/files/HashTable.java"><tt>HashTable.java</tt></a></li> 
+      </ul>
+      <br></li>
+  </li>
+  <li>Implement and thoroughly test your <tt>WordFrequencyMain</tt> class.</li>
+  <li>Implement and thoroughly test your <tt>HashTable</tt> class.</li>
+  <li>If you are not using the lab computers to develop your program, make
+      sure you compile and run your program to ensure that it works on the
+      Linux lab computers. You can compile your Java source using <tt>javac</tt>
+      in a terminal window as in this example: <dir><tt>javac *.java</tt></dir>
+      and the run your program using <tt>java</tt> as in:
+
+      <dir><tt>java WordFrequencyMain inputFile</tt></dir>.
+</li>
+
+  <li>Submit your work for grading.</li>
+</ol>
+
+
+</div>
+<div>
+
+<a name="Submission"></a>
+<h2>Submitting Your Work</h2>
+
+<p>Make sure your code follows the <a href="?r=styleGuide">style</a> and
+<a href="?r=commentingGuide">commenting</a> standards used in CS 302 and
+CS 367.</p>
+
+<p><a href="?r=coursework#Handin">Electronically submit</a> the following file
+to your <b><tt>in</tt></b> "handin" directory by the due date and time (or
+refer to the <a href="?r=coursework#Late">late policy</a>):</p>
+
+<ul>
+      <li>"<tt>WordFrequencyMain.java</tt>" containing your <tt>WordFrequencyMain</tt> class,</li>
+      <li>"<tt>HashTable.java</tt>" containing your modified <tt>HashTable</tt> class,</li>
+      <li>"<tt>Word.java</tt>" containing your modified <tt>Word</tt> class,
+      <li>"<tt>WordComparator.java</tt>" containing your modified <tt>WordComparator</tt> class, and</li>
+      <li>"<tt>*.java</tt>" only if you implemented additional classes for your program.</li>
+  <br />
+  <li>If you are working with a partner, only one partner submits the program 
+      files, but <b>both partners must submit to his/her own hand-in directory
+      a completed
+      <a href="assignments/README.txt"><tt>README.txt</tt></a> file.</b>
+      Students working in pairs must follow the 
+      <a href="?r=coursework#pp">rules for pair programming</a>.</li>
+</ul>
+
+<p><em><b>Please turn in only the files named above.</b></em> Extra files 
+clutter up the "handin" directories.</p>
+
+</div>
+</content>
