@@ -19,23 +19,14 @@ public class WordFrequencyMain {
         br.close();
 
         List<SimpleHashMap.Entry<String, Integer>> entries = map.entries();
-        Comparator<SimpleHashMap.Entry<String, Integer>> compare =
-            new Comparator<SimpleHashMap.Entry<String, Integer>>() {
-            public int compare(SimpleHashMap.Entry<String, Integer> a,
-                SimpleHashMap.Entry<String, Integer> b) {
-                int t = a.getValue().compareTo(b.getValue());
-                if (t != 0)
-                    return -t;
-                return a.getKey().compareTo(b.getKey());
-            }
-        };
-
         ArrayList<SimpleHashMap.Entry<String, Integer>> sorted =
             new ArrayList<SimpleHashMap.Entry<String, Integer>>();
         for (SimpleHashMap.Entry<String, Integer> e: entries) {
                 int pos = 0;
                 while (pos < sorted.size() &&
-                        compare.compare(sorted.get(pos), e) < 0)
+                        (sorted.get(pos).getValue() > e.getValue() ||
+                         (sorted.get(pos).getValue() == e.getValue() &&
+                         sorted.get(pos).getKey().compareTo(e.getKey()) < 0)))
                     ++pos;
                 sorted.add(pos, e);
                 if (sorted.size() > 11)
