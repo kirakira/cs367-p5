@@ -50,7 +50,7 @@ public class SimpleHashMap<K, V> {
          * @return the key corresponding to this entry
          */
         public K getKey() {
-            return key;
+            // TODO
         }
 
         /**
@@ -59,7 +59,7 @@ public class SimpleHashMap<K, V> {
          * @return the value corresponding to this entry
          */
         public V getValue() {
-            return value;
+            // TODO
         }
 
         /**
@@ -70,6 +70,7 @@ public class SimpleHashMap<K, V> {
          * @return old value corresponding to the entry
          */
         public V setValue(V value) {
+            // TODO
         }
     }
 
@@ -145,7 +146,7 @@ public class SimpleHashMap<K, V> {
     /**
      * Returns a list of all the mappings contained in this map. This method
      * will iterate over the hash table and collect all the entries into a new
-     * list.
+     * list. If the map is empty, return an empty list (not null).
      *
      * @return a list of mappings in this map
      */
