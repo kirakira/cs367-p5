@@ -146,7 +146,8 @@ public class SimpleHashMap<K, V> {
     /**
      * Returns a list of all the mappings contained in this map. This method
      * will iterate over the hash table and collect all the entries into a new
-     * list. If the map is empty, return an empty list (not null).
+     * list. If the map is empty, return an empty list (not <tt>null</tt>).
+     * The order of entries in the list can be arbitrary.
      *
      * @return a list of mappings in this map
      */
