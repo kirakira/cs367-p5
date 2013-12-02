@@ -2,11 +2,12 @@
   Programming Assignment 5 Write-up
   Version: 0.2b
   Date Changed: 11/27/13
-  Last Edited By: Nick Burek
+  Last Edited By: Menghui Wang
   
   Change Log:
     11/26/13 - First Version Release (0.1) for review
     11/27/13 - Modifying the document to use LinkedList for chaining instead of ArrayList
+    12/01/13 - Change HashTable to SimpleHashMap
   
 -->
 <content for="title">CS 367, Programming Assignment 5</content>
@@ -46,11 +47,16 @@
 
 <h3>Description</h3>
 <p>
-In this assignment you will be writing a Java program that indexes a web page to find the most 
-frequently used words on the page. The main program will read in the contents of a file and keep a 
-counter of how often each word appears using a HashTable data structure. 
-The program will then print out some basic statistics about the Hashtable followed by a list of the 
-top 11 most frequently used words in the list.  
+In this assignment you will implement a hashtable-based generic map, and use that hash map to compute
+the most frequent words in a text file.
+The program will then print out a list of the top 11 most frequently used words in the file.  
+</p>
+
+<p>
+A brute force approach to the word counter task without a sophisticated data structure would take quadratic time.
+With the help of a hash map, the main program can maintain a map from words to their number of occurrences efficiently.
+The overall complexity can be reduced to linear under ideal hash functions.
+This made the program possible to work on very large files.
 </p>
   
 <h3>Goals</h3>
@@ -59,8 +65,7 @@ top 11 most frequently used words in the list.
   <ul>
     <li>Gain experience with hashing.</li>
     <li>Gain experience resizing a data structure.</li>
-    <li>Gain experience using comparators.</li>
-    <li>Gain experience using javadoc documentation to get information about a class.</li>
+    <li>Gain experience using a data structure to solve a problem efficiently.</li>
   </ul>
 
 
@@ -70,86 +75,99 @@ top 11 most frequently used words in the list.
 <a name="Specifications"></a>
 <h2>Specifications</h2>
 
-<h3>The <tt>HashTable</tt> Class</h3>
-
-<p>The <tt><a href="assignments/p5/javadocs/HashTable.html">javadoc for the HashTable</a></tt> class
-gives information about the methods you need to implement. You will implement each method as described in the javadocs.
-A skeleton class is provided for you; see <tt><a href="assignments/p5/files/HashTable.java">HashTable.java</a></tt>.
-Additionally, your hashtable <b>must</b>:
-<ul>
-  <li>be implemented using an array,</li>
-  <li>handle collisions using chaining, and</li>
-  <li>use <tt>LinkedList</tt>s to implement the chained bucket hashing.</li>
-</ul> 
-
-<p>The constructor for the hashtable takes two arguments.
-The first is the initial size
-of the hashtable.  The second is a value that indicates the maximum <i>load factor</i>
-of the table.  The load factor is defined to be the number of items in the hashtable 
-divided by the size of the hashtable.  The maximum load factor is a measure of how full the
-hashtable is allowed to get before it will be resized.  For example, a maximum load factor of 0.8
-means that, under ideal hashing (when
-there are no collisions), the hashtable is allowed to get up to 80% full before it will be resized.</p>
-
-
-<p>The index you will use to determine where to store an entry will be very simple.
-You will call the <tt>hashCode()</tt> method on the item you need to insert or
-lookup and modulo this value by the table size (to make sure it is a valid index).
-One potential problem is the fact that <tt>hashCode()</tt> can return a negative
-value.  For example, when you take a modulo of a negative value, the result is a 
-negative value.  An easy way to deal with this is to 
-take the absolute value of the hashcode.
-<!--check the value of 
-<tt>hashCode()</tt> modulo table size.  If it is negative, simply add table size to
-the result.  This will give you a positive value between 0 and <i>table size-1</i>.
--->
+<h3>The <tt>SimpleHashMap&ltK, V&gt</tt> Class</h3>
+<p>
+This class implements a generic map based on hashtables using chaining
+as its collision resolution.
 </p>
 
-<p>The <tt>dump</tt> method dumps (i.e., prints) the values in the hashtable to
-a given output source.  It works by going 
-through the indices in the hashtable in order (0, 1, 2, ... up to <i>table size-1</i>).
-At each index it prints the the index followed by the values stored at that index.
-The values at each index should be printed in the order they are stored in the 
-<tt>LinkedList</tt>.  
-All the output will go to the <tt>PrintStream</tt> passed as an argument.  </p>
+<p>
+A map is a data structure that creates a key-value mapping. Keys are
+<i>unique</i> in the map. That is, there cannot be more than one value associated
+with a same key. However, two keys can map to a same value.
+</p>
 
-<p>The <tt>topEleven</tt> method prints the values in the hashtable to
-a given output source.  It works by going through the entire HashTable and finding the 11 entries
-with the greatest value and printing them. Each word should be printed on its own line.
-If there are less than 11 entries then you would print 
-them all. If there are multiple items with the same value then they should be printed out in the 
-order that they are stored in the HashTable. This function should never print more than 11 values. 
-Order will be determined by using the compare function from the Comparator class that is passed into 
-the topEleven function. </p>
+<p>
+The <tt>SimpleHashMap</tt> class takes two generic parameters, <tt>K</tt> and
+<tt>V</tt>, standing for the types of keys and values respectively. Items
+are stored in a hashtable. Hash values are computed from the
+<tt>hashCode()</tt> method of the <tt>K</tt> type objects.
+</p>
 
-<p>The <tt>displayStats</tt> method will display some statistics about the current
-state of your hashtable.  When it is called it should display: the current table size,
-the number of items in the table, the current load factor, 
-the length of the largest chain (i.e., the maximum 
-number of items stored at any one index), the number of chains of length 0
-(i.e., the number of "empty" indices), and the average length of the chains of length
-greater than 0.
-All the output will go to the <tt>PrintStream</tt> passed as an argument. </p>
+<p>
+Chains for each bucket are implemented using Java's <tt>LinkedList</tt>. When
+a hashtable is created, its initial table size and maximum load factor is
+set to <tt>11</tt> and <tt>0.75</tt>. The hashtable can hold arbitrarily
+many key-value pairs and resizes itself whenever it reaches its
+maximum load factor.
+</p>
 
+<p>
+<tt>null</tt> values are <i>not</i> allowed in <tt>SimpleHashMap</tt>. You can assume that
+<tt>equals()</tt> and <tt>hashCode()</tt> on <tt>K</tt> are well defined.
+That is, if for two non-<tt>null</tt> keys <tt>k1</tt> and <tt>k2</tt>,
+if <tt>k1.equals(k2)</tt>, then <tt>k1.hashCode() == k2.hashCode()</tt>.
+Do not assume in the other direction.
+</p>
 
-<p>Note the following for the HashTable class:</p>
+<p>The <tt><a href="assignments/p5/javadocs/SimpleHashMap.html">javadoc</a></tt> for the <tt>SimpleHashMap</tt> class
+gives information about the methods you need to implement. You will implement each method as described in the javadocs.
+Read it carefully before coding.
+A skeleton class is provided for you; see <tt><a href="assignments/p5/files/SimpleHashMap.java">SimpleHashMap.java</a></tt>.
+Additionally, your <tt>SimpleHashMap</tt> must <b>not</b> use Java's hashtable-based data structures.
+
+<p>In order to implement the generic map, you will use an auxiliary <tt>Entry&ltK, V&gt</tt> class to encapsulate the key and value in one object.
+The skeleton of this class has been defined for you in <tt>SimpleHashMap</tt>.
+In addition, when implementing the <tt>entries</tt> method that returns a list of all mappings in the map, you will
+make use of this class.
+<p>
+
+<p>The constructor of the class initializes the hashtable with initial capacity 11 and maximum <i>load factor</i> 0.75.
+The load factor is defined to be the number of items in the hashtable 
+divided by the capacity of the hashtable.
+The maximum load factor is a measure of how full the hashtable is allowed to get before it will be resized.
+For example, a maximum load factor of 0.75 means that, under ideal hashing (when
+there are no collisions), the hashtable is allowed to get up to 80% full before it will be resized.</p>
+
+<p>The index you will use to determine where to store an entry will be very simple.
+You will call the <tt>hashCode()</tt> method on the key of the mapping you need to insert or
+lookup and modulo this value by the table size (to make sure it is a valid index).
+One potential issue is that <tt>hashCode()</tt> can return a negative
+value.
+As a result of Java's convention on negative modulos, when you take a modulo of a negative value, the result is a 
+negative value.
+A recommended way to get around this is to check the value of 
+<tt>hashCode()</tt> modulo table size, and if it is negative, simply add table size to
+the result.
+This will give you a positive value between 0 and <i>table size-1</i>.
+</p>
+
+<p>
+The <tt>entries</tt> method returns a list of all mappings in this map.
+Note that the return value of this method is <tt>List&ltSimpleHashMap.Entry&ltK, V&gt&gt</tt>,
+which is a Java List carrying all the entries in the map.
+Since <tt>List</tt> is an interface instead of a class, it cannot be instantiated.
+However you can instantiate any class that implements the <tt>List</tt> interface such as <tt>ArrayList</tt> and <tt>LinkedList</tt> and return it.
+</p>
+
+<p>
+This method iterates through the hashtable and collect all entries into a new list.
+Remember that with naive implementations full iteration over a hashtable can be slow as it has to walk through all of the buckets, among which many may be empty.
+Although in fact fast iteration for hashtables can be done in linear time with a combination of an auxiliary linear list, this is not required by this assignment.
+</p>
+
+<p>Some useful tips your <tt>SimpleHashMap</tt> class:</p>
 <ul>
-  <li>Duplicates are allowed. This makes adding an item faster since you 
-  don't have to check if it is already there.</li>
-  <li><tt>lookup</tt> returns an item (of the generic type <tt>T</tt>), not a boolean.  That is, if it
-  finds the item, it returns it; if not, it returns <tt>null</tt>.  The item
-  may be in the table more than once, however, <tt>lookup</tt> should just return the 
-  first one it finds at a given index. </li>
-  <li><tt>delete</tt> returns an item (of the generic type <tt>T</tt>), not a boolean.  That is, if it
-  finds the item, it returns it (and removes it); if not, it returns <tt>null</tt>.  
-  Note that the item may be in the table more than once.  However, <tt>delete</tt> 
-  should just remove and return the first one it finds at a given index. </li>
-  <li><a name="excUpdate"></a>The constructors of the <tt>Hashtable</tt> throw <tt>IllegalArgumentException</tt>s if the parameters
-  passed to them are not valid (see 
-  <a href="assignments/p5/javadocs/HashTable.html#HashTable(int, double)"><tt>HashTable</tt> constructor documentation</a>).</li>
-  <li>Your code can (and should) use methods from the <tt>Object</tt> class, such as
-  <tt>equals</tt>, <tt>hashCode</tt>, and <tt>toString</tt>. </li>
-  <li>You don't ever need to shrink your hashtable.</li>
+    <li>Duplicated keys are <i>not</i> allowed in a map. If the user tries to associate a value with a key that is already
+    in the map, the old value should be replaced.</li>
+    <li><tt>null</tt> values are <i>not</i> allowed in <tt>SimpleHashMap</tt>. Both keys and values should be non-<tt>null</tt>.
+    All methods should throw <tt>NullPointerException</tt> whenever a <tt>null</tt> parameter is detected.</li>
+    <li>Your code can (and should) use methods from the <tt>Object</tt> class, such as
+        <tt>equals</tt> and <tt>hashCode</tt>. </li>
+        <li>You can assume <tt>hashCode</tt> on keys are defined properly. That is, if two keys are equal, their <tt>hashCode</tt>s must also be equal. However for two keys with the same <tt>hashCode</tt>s, the keys may not equal.
+        Therefore, test equality on keys using <tt>equals</tt> rather than using <tt>hashCode</tt>.</li>
+    <li>The correctness of your <tt>SimpleHashMap</tt> should <i>not</i> rely on a good hash function. For example, suppose some class has a very bad <tt>hashCode</tt> method that always returns 0 (note that this is still a legal way to define <tt>hashCode</tt>). Your <tt>SimpleHashMap</tt> should still work correctly with that class as the key type, though the performance could be pretty bad.</li>
+    <li>You don't ever need to shrink your hashtable.</li>
 </ul>
 
 <p>The 
@@ -162,33 +180,47 @@ you will want to use in this program.</p>
 
 <h3>The <tt>WordFrequencyMain</tt> Class</h3>
 
-<p>The WordFrequencyMain class will contain the main() function that is the entry point for your 
-application. This will be where the file is read in and words are counted. The input file will 
-contain only words, spacing, and punctuation. We will provide a function for you that will read in a 
-line from the file, remove all punctuation, convert it to lowercase, and return an array of all the 
-words on that line.
+<p>The WordFrequencyMain class will contain the <tt>main()</tt> function that is the entry point for your 
+application. This will be where the file is read in and words are counted.</p>
 
-After counting the occurence of all the words in the file, your program should print out the statistics 
-provided by the HashTable function as well as the top 11 most frequent words that appeared in the 
-file. 
-
-A skeleton class is provided for you; see <tt><a href="assignments/p5/files/WordFrequencyMain.java">WordFrequencyMain.java</a></tt>.
-
+<p>
+The main method of this program works as follows.
+It will take in a command line argument <tt>args[0]</tt> (rather than keyboard input!) containing the file name.
+It then reads the file word by word and maintaining a <tt>SimpleHashMap</tt> from each word to its count of occurrences.
+Finally, it outputs a list of top 11 frequent words in the file in the order of their count of occurrences, with most frequent word first.
+In case there is a tie, the word with smaller alphabetical order comes first.
+If there are no more than 11 words in the file, all words should be printed.
 </p>
 
-<h3> The <tt>Word</tt> Class</h3>
+<p>A skeleton class is provided for you; see <tt><a href="assignments/p5/files/WordFrequencyMain.java">WordFrequencyMain.java</a></tt>. The next sections will explain in detail the input and output requirements and restrictions, as well as sample cases.
+</p>
 
-<p>The Word class is a container class that will store a String for the word and an integer counting 
-the frequency. It will need to override the hashCode() function to properly return a hash of the 
-word. It will also need to override the toString() function to use the format "( word, count)". 
-The rest of the implementation details for the Word class are left for you to decide. </p>
+<p>
+You can either design your own hash function or use Java's built-in hash functions.
+The running time of your program should be linear in the length of the input file under the assumption that the hash function produces no collision.
+Test your program against all sample cases provided below, and make sure they produce exactly the same results as sample outputs.
+All cases are designed to be computed within less than 1 second on a modern computer, so if it takes your program far more time than that, it's an indication that you have done something wrong.
+</p>
 
-<h3> The <tt>WordComparator</tt> Class</h3>
+<h3>Input Requirements</h3>
+<p>
+The program should take a single command line argument which indicates the file name.
+There would always be exactly one such argument, and the file is guaranteed to be accessible.
+</p>
 
-<p>The WordComparator class should extend from Comparator<Word>. The WordComparator class is used 
-to compare two Word objects to each other. Details about the 
-<a href="http://docs.oracle.com/javase/7/docs/api/java/util/Comparator.html">Comparator<T> class can 
-be found in the javadocs.</a></p>
+<p>
+The file contains only lower case letters and separators, i.e. spaces and newlines ('\n').
+There won't be two consecutive separators.
+A <i>word</i> is defined to be a sequence of letters separated by separators.
+The file always contains at least one word.
+</p>
+
+<h3>Output Requirements</h3>
+<p>
+The program should print to standard output the top 11 most frequent word in the file, one word each line, in the order of their counts of occurrences, with most frequent word first.
+If two words have the same number of occurrences, the one alphabetically smaller should come first.
+If there are less than 11 distinct words in the file, output all the words in the order specified above.
+</p>
 
 </div>
 <div>
@@ -217,13 +249,14 @@ we suggest the following steps:</p>
   <li>Download the following files to your programming assignment 5	 
 directory:
       <ul>
-      <li><a href="assignments/p4/files/WordFrequencyMain.java"><tt>WordFrequencyMain.java</tt></a></li>
-      <li><a href="assignments/p4/files/HashTable.java"><tt>HashTable.java</tt></a></li> 
+      <li><a href="assignments/p5/files/WordFrequencyMain.java"><tt>WordFrequencyMain.java</tt></a></li>
+      <li><a href="assignments/p5/files/SimpleHashMap.java"><tt>SimpleHashMap.java</tt></a></li> 
       </ul>
       <br></li>
+      Do <b>not</b> use a package name for your program.
   </li>
+  <li>Implement and thoroughly test your <tt>SimpleHashMap</tt> class.</li>
   <li>Implement and thoroughly test your <tt>WordFrequencyMain</tt> class.</li>
-  <li>Implement and thoroughly test your <tt>HashTable</tt> class.</li>
   <li>If you are not using the lab computers to develop your program, make
       sure you compile and run your program to ensure that it works on the
       Linux lab computers. You can compile your Java source using <tt>javac</tt>
@@ -232,6 +265,7 @@ directory:
 
       <dir><tt>java WordFrequencyMain inputFile</tt></dir>.
 </li>
+  <li>Make sure your program passes all sample cases.</li>
 
   <li>Submit your work for grading.</li>
 </ol>
@@ -253,9 +287,7 @@ refer to the <a href="?r=coursework#Late">late policy</a>):</p>
 
 <ul>
       <li>"<tt>WordFrequencyMain.java</tt>" containing your <tt>WordFrequencyMain</tt> class,</li>
-      <li>"<tt>HashTable.java</tt>" containing your modified <tt>HashTable</tt> class,</li>
-      <li>"<tt>Word.java</tt>" containing your modified <tt>Word</tt> class,
-      <li>"<tt>WordComparator.java</tt>" containing your modified <tt>WordComparator</tt> class, and</li>
+      <li>"<tt>SimpleHashMap.java</tt>" containing your modified <tt>SimpleHashMap</tt> class,</li>
       <li>"<tt>*.java</tt>" only if you implemented additional classes for your program.</li>
   <br />
   <li>If you are working with a partner, only one partner submits the program 
