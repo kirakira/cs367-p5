@@ -97,17 +97,17 @@ public class SimpleHashMap<K, V> {
     }
 
     /**
-     * Associates the specified value with the specified key in this map.
-     * Neither the key nor the value can be <tt>null</tt>. If the map previously
-     * contained a mapping for the key, the old value is replaced.
+     * <p>Associates the specified value with the specified key in this map.
+     * Neither the key nor the value can be <tt>null</tt>. If the map
+     * previously contained a mapping for the key, the old value is replaced.</p>
      *
-     * If the load factor of the hash table after the insertion would exceed
+     * <p>If the load factor of the hash table after the insertion would exceed
      * the maximum load factor <tt>0.75</tt>, then the resizing mechanism is
      * triggered. The size of the table should grow at least by a constant
      * factor in order to ensure the amortized constant complexity, but you
      * are free to decide the exact value of the new table size (e.g. whether
-     * to use a prime or not). After that, and all of the mappings are rehashed
-     * to the new table.
+     * to use a prime or not). After that, all of the mappings are rehashed to
+     * the new table.</p>
      *
      * @param key key with which the specified value is to be associated
      * @param value value to be associated with the specified key
