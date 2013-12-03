@@ -5,6 +5,8 @@ public class WordFrequencyMain {
     public static final void main(String[] args) {
         // TODO add your variables
 
+        // TODO check if there are exactly one argument in args
+ 
         try {
             BufferedReader br = new BufferedReader(new FileReader(args[0]));
             String line;
