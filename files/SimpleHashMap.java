@@ -1,32 +1,30 @@
 import java.util.List;
 
 /**
- * This class implements a generic map based on hashtables using chaining
- * as its collision resolution.
+ * This class implements a generic map based on hash tables using chained
+ * buckets for collision resolution.
  *
  * <p>A map is a data structure that creates a key-value mapping. Keys are
  * unique in the map. That is, there cannot be more than one value associated
  * with a same key. However, two keys can map to a same value.</p>
  *
- * <p>
- * The <tt>SimpleHashMap</tt> class takes two generic parameters, <tt>K</tt> and
- * <tt>V</tt>, standing for the types of keys and values respectively. Items
- * are stored in a hashtable. Hash values are computed from the
+ * <p>The <tt>SimpleHashMap</tt> class takes two generic parameters, <tt>K</tt>
+ * and <tt>V</tt>, standing for the types of keys and values respectively. Items
+ * are stored in a hash table. Hash values are computed from the
  * <tt>hashCode()</tt> method of the <tt>K</tt> type objects.</p>
  *
- * <p>
- * Chains for each bucket are implemented using Java's <tt>LinkedList</tt>.
- * When a hashtable is created, its initial table size and maximum load factor
- * is set to <tt>11</tt> and <tt>0.75</tt>. The hashtable can hold arbitrarily
- * many key-value pairs and resizes itself whenever it reaches its maximum load
- * factor.</p>
+ * <p>The chained buckets are implemented using Java's <tt>LinkedList</tt>
+ * class.  When a hash table is created, its initial table size and maximum
+ * load factor is set to <tt>11</tt> and <tt>0.75</tt>. The hash table can hold
+ * arbitrarily many key-value pairs and resizes itself whenever it reaches its
+ * maximum load factor.</p>
  *
- * <p><tt>null</tt> values are not allowed in <tt>SimpleHashMap</tt>. You can
- * assume that <tt>equals()</tt> and <tt>hashCode()</tt> on <tt>K</tt> are well
- * defined. That is, if for two non-<tt>null</tt> keys <tt>k1</tt> and
- * <tt>k2</tt>, if <tt>k1.equals(k2)</tt>, then
- * <tt>k1.hashCode() == k2.hashCode()</tt>. Do not assume in the other
- * direction.</p>
+ * <p><tt>null</tt> values are not allowed in <tt>SimpleHashMap</tt> and a
+ * NullPointerException is thrown if used. You can assume that <tt>equals()</tt>
+ * and <tt>hashCode()</tt> on <tt>K</tt> are defined, and that, for two
+ * non-<tt>null</tt> keys <tt>k1</tt> and <tt>k2</tt>, if <tt>k1.equals(k2)</tt>
+ * then <tt>k1.hashCode() == k2.hashCode()</tt>. Do not assume that if the hash
+ * codes are the same that the keys are equal since collisions are possible.</p>
  */
 public class SimpleHashMap<K, V> {
 
@@ -123,7 +121,7 @@ public class SimpleHashMap<K, V> {
 
     /**
      * Removes the mapping for the specified key from this map if present. This
-     * method does nothing if the key is not in the hashtable.
+     * method does nothing if the key is not in the hash table.
      *
      * @param key key whose mapping is to be removed from the map
      * @return the previous value associated with <tt>key</tt>, or <tt>null</tt>
@@ -152,5 +150,6 @@ public class SimpleHashMap<K, V> {
      * @return a list of mappings in this map
      */
     public List<Entry<K, V>> entries() {
+        //TODO
     }
 }

@@ -44,30 +44,31 @@
 
 <a name="Overview"></a>
 <h2>Overview</h2>
-
-<h3>Description</h3>
-<p>
-In this assignment you will implement a hashtable-based generic map, and use that hash map to compute
-the most frequent words in a text file.
-The program will then print out a list of the top 11 most frequently used words in the file.  
-</p>
-
-<p>
-A brute force approach to the word counter task without a sophisticated data structure would take quadratic time.
-With the help of a hash map, the main program can maintain a map from words to their number of occurrences efficiently.
-The overall complexity can be reduced to linear under ideal hash functions.
-This made the program possible to work on very large files.
-</p>
   
 <h3>Goals</h3>
 
   <p>The goals of this assignment are to:</p>
   <ul>
-    <li>Gain experience with hashing.</li>
+    <li>Solidify your understanding of hashing.</li>
     <li>Gain experience resizing a data structure.</li>
-    <li>Gain experience using a data structure to solve a problem efficiently.</li>
+    <li>Use a data structure to efficiently solve a problem.</li>
   </ul>
 
+<h3>Description</h3>
+
+<p>
+In this assignment, you'll implement a hash table-based generic map, and use
+that hash map to determine the most frequent words in a text file. The program
+then prints out a list of the 11 most frequently used words in the file.
+</p>
+
+<p>
+A brute force approach to the word counter task without a sophisticated data
+structure would take quadratic time. With the help of a hash map, the program
+can efficiently maintain a map from words to their number of occurrences and
+reduce the overall complexity to linear time under ideal hashing. This makes
+it possible for the program to work on very large files.
+</p>
 
 </div>
 <div>
@@ -76,151 +77,76 @@ This made the program possible to work on very large files.
 <h2>Specifications</h2>
 
 <h3>The <tt>SimpleHashMap&ltK, V&gt</tt> Class</h3>
-<p>
-This class implements a generic map based on hashtables using chaining
-as its collision resolution.
-</p>
 
-<p>
-A map is a data structure that creates a key-value mapping. Keys are
-<i>unique</i> in the map. That is, there cannot be more than one value associated
-with a same key. However, two keys can map to a same value.
-</p>
-
-<p>
-The <tt>SimpleHashMap</tt> class takes two generic parameters, <tt>K</tt> and
-<tt>V</tt>, standing for the types of keys and values respectively. Items
-are stored in a hashtable. Hash values are computed from the
-<tt>hashCode()</tt> method of the <tt>K</tt> type objects.
-</p>
-
-<p>
-Chains for each bucket are implemented using Java's <tt>LinkedList</tt>. When
-a hashtable is created, its initial table size and maximum load factor is
-set to <tt>11</tt> and <tt>0.75</tt>. The hashtable can hold arbitrarily
-many key-value pairs and resizes itself whenever it reaches its
-maximum load factor.
-</p>
-
-<p>
-<tt>null</tt> values are <i>not</i> allowed in <tt>SimpleHashMap</tt>. You can assume that
-<tt>equals()</tt> and <tt>hashCode()</tt> on <tt>K</tt> are well defined.
-That is, if for two non-<tt>null</tt> keys <tt>k1</tt> and <tt>k2</tt>,
-if <tt>k1.equals(k2)</tt>, then <tt>k1.hashCode() == k2.hashCode()</tt>.
-Do not assume in the other direction.
-</p>
-
-<p>The <tt><a href="assignments/p5/javadocs/SimpleHashMap.html">javadoc</a></tt> for the <tt>SimpleHashMap</tt> class
-gives information about the methods you need to implement. You will implement each method as described in the javadocs.
-Read it carefully before coding.
-A skeleton class is provided for you; see <tt><a href="assignments/p5/files/SimpleHashMap.java">SimpleHashMap.java</a></tt>.
-Additionally, your <tt>SimpleHashMap</tt> must <b>not</b> use Java's hashtable-based data structures.
-
-<p>In order to implement the generic map, you will use an auxiliary <tt>Entry&ltK, V&gt</tt> class to encapsulate the key and value in one object.
-The skeleton of this class has been defined for you in <tt>SimpleHashMap</tt>.
-In addition, when implementing the <tt>entries</tt> method that returns a list of all mappings in the map, you will
-make use of this class.
-<p>
-
-<p>The constructor of the class initializes the hashtable with initial capacity 11 and maximum <i>load factor</i> 0.75.
-The load factor is defined to be the number of items in the hashtable 
-divided by the capacity of the hashtable.
-The maximum load factor is a measure of how full the hashtable is allowed to get before it will be resized.
-For example, a maximum load factor of 0.75 means that, under ideal hashing (when
-there are no collisions), the hashtable is allowed to get up to 80% full before it will be resized.</p>
-
-<p>The index you will use to determine where to store an entry will be very simple.
-You will call the <tt>hashCode()</tt> method on the key of the mapping you need to insert or
-lookup and modulo this value by the table size (to make sure it is a valid index).
-One potential issue is that <tt>hashCode()</tt> can return a negative
-value.
-As a result of Java's convention on negative modulos, when you take a modulo of a negative value, the result is a 
-negative value.
-A recommended way to get around this is to check the value of 
-<tt>hashCode()</tt> modulo table size, and if it is negative, simply add table size to
-the result.
-This will give you a positive value between 0 and <i>table size-1</i>.
-</p>
-
-<p>
-The <tt>entries</tt> method returns a list of all mappings in this map.
-Note that the return value of this method is <tt>List&ltSimpleHashMap.Entry&ltK, V&gt&gt</tt>,
-which is a Java List carrying all the entries in the map.
-Since <tt>List</tt> is an interface instead of a class, it cannot be instantiated.
-However you can instantiate any class that implements the <tt>List</tt> interface such as <tt>ArrayList</tt> and <tt>LinkedList</tt> and return it.
-</p>
-
-<p>
-This method iterates through the hashtable and collect all entries into a new list.
-Remember that with naive implementations full iteration over a hashtable can be slow as it has to walk through all of the buckets, among which many may be empty.
-Although in fact fast iteration for hashtables can be done in linear time with a combination of an auxiliary linear list, this is not required by this assignment.
-</p>
-
-<p>Some useful tips your <tt>SimpleHashMap</tt> class:</p>
-<ul>
-    <li>Duplicated keys are <i>not</i> allowed in a map. If the user tries to associate a value with a key that is already
-    in the map, the old value should be replaced.</li>
-    <li><tt>null</tt> values are <i>not</i> allowed in <tt>SimpleHashMap</tt>. Both keys and values should be non-<tt>null</tt>.
-    All methods should throw <tt>NullPointerException</tt> whenever a <tt>null</tt> argument is detected.</li>
-    <li>Your code can (and should) use methods from the <tt>Object</tt> class, such as
-        <tt>equals</tt> and <tt>hashCode</tt>. </li>
-        <li>You can assume <tt>hashCode</tt> on keys are defined properly. That is, if two keys are equal, their <tt>hashCode</tt>s must also be equal. However for two keys with the same <tt>hashCode</tt>s, the keys may not equal.
-        Therefore, test equality on keys using <tt>equals</tt> rather than using <tt>hashCode</tt>.</li>
-    <li>The correctness of your <tt>SimpleHashMap</tt> should <i>not</i> rely on a good hash function. For example, suppose some class has a very bad <tt>hashCode</tt> method that always returns 0 (note that this is still a legal way to define <tt>hashCode</tt>). Your <tt>SimpleHashMap</tt> should still work correctly with that class as the key type, though the performance could be pretty bad.</li>
-    <li>You don't ever need to shrink your hashtable.</li>
-</ul>
-
-<p>The 
+<p>This generic class enables a key value K to be mapped to its associated
+value V, like a word is mapped to its definition in a dictionary. The map
+uses a hash table with chained buckets for collision resolution as its data
+structure. The chained buckets are implemented using Java's
 <a href="http://docs.oracle.com/javase/6/docs/api/java/util/LinkedList.html"><tt>LinkedList</tt>
-javadoc</a> lists (and describes) all the <tt>LinkedList</tt> methods.  You can use
-any of the <tt>LinkedList</tt> methods, so be sure to 
-look over the documentation carefully to determine which <tt>LinkedList</tt> methods
-you will want to use in this program.</p>
+class</a> (review the linked javadoc to determine how to most effectively use
+it). <font color="red">Your <tt>SimpleHashMap</tt> may <b>not</b> use any
+other Java classes than <tt>LinkedList</tt> except where noted below.</font></p>
+
+<p>The <tt><a href="assignments/p5/javadocs/SimpleHashMap.html">javadoc</a></tt>
+for the <tt>SimpleHashMap</tt> class provides information about this class and
+the methods you need to implement. Implement each method as described in the
+javadoc. Read it carefully before coding. We've also provided a skeleton class
+for you; see
+<tt><a href="assignments/p5/files/SimpleHashMap.java">SimpleHashMap.java</a></tt>.</p>
+
+<p><b>Hash Index:</b> Call the <tt>hashCode()</tt> method on the key and
+modulo this value by the table size. If <tt>hashCode()</tt> returns a negative
+then the resulting hash index will be negative given how modulo works in Java.
+Because of this, your hash function will check for a negative hash index and,
+if negative, add table size to it to get a valid hash index.</p>
+
+<p><b><tt>Entry</tt> Inner Class:</b>
+In order to implement the generic map, you'll use an auxiliary class, named
+<tt>Entry&ltK, V&gt</tt> to encapsulate the key and value in one object. This
+class is implemented as an "inner class" where one class defined inside another
+class, and its skeleton is defined for you in <tt>SimpleHashMap</tt>. You can
+use this inner class in other classes since it is public, but you need to
+use the name <tt>SimpleHashMap.Entry&lt;K, V&gt;</tt> where K and V are
+replaced with the desired types.<p>
+
+<p><b>Additional Points:</b></p>
+<ul>
+    <li>Duplicated keys are <i>not</i> allowed in a map. If the user tries to associate a value with a key that is already in the map, the old value should be replaced.</li>
+    <li><tt>null</tt> values are <i>not</i> allowed in <tt>SimpleHashMap</tt>. Both keys and values should be non-<tt>null</tt>. All methods should throw a <tt>NullPointerException</tt> whenever a <tt>null</tt> argument is detected.</li>
+    <li>You can assume <tt>hashCode</tt> on keys is defined properly. That is, if two keys are equal, their <tt>hashCode</tt>s must also be equal. However, collisions are possible so two different keys may result in the same <tt>hashCode</tt>. Therefore, use <tt>equals</tt> to determine if two keys match rather than using their <tt>hashCode</tt>.</li>
+    <li>Your <tt>SimpleHashMap</tt> should still work even if the key type class has a very bad <tt>hashCode</tt> method. If, for example, it always returns 0, your <tt>SimpleHashMap</tt> should still work though its performance would be pretty bad.</li>
+    <li>You must grow your hash table if the load factor is exceeded but you don't need to shrink your hash table. Recall that the load factor is the number of entries in the hash table divided by the hash table size.</li>
+    <li>The <tt>entries</tt> method may use either Java's <tt>ArrayList</tt> or a <tt>LinkedList</tt> for the <tt>List</tt> of entries it returns. A naive implementation iterates over the hash table stepping through all of the buckets, many of which may be empty. A faster iteration can be done in linear time with respect to the number of entries with a combination of an unsorted auxiliary linear list, though this is not required by this assignment.</li>
+</ul>
 
 
 <h3>The <tt>WordFrequencyMain</tt> Class</h3>
 
-<p>The WordFrequencyMain class will contain the <tt>main()</tt> function that is the entry point for your 
-application. This will be where the file is read in and words are counted.</p>
+<p>The WordFrequencyMain class will contain the <tt>main()</tt> method that
+reads the file and counts the words. A skeleton class is provided for you;
+see <tt><a href="assignments/p5/files/WordFrequencyMain.java">WordFrequencyMain.java</a></tt>.
 
-<p>
-The main method of this program works as follows.
-It will take in a command line argument <tt>args[0]</tt> (rather than keyboard input!) containing the file name.
-It then reads the file word by word and maintaining a <tt>SimpleHashMap</tt> from each word to its count of occurrences.
-Finally, it outputs a list of top 11 frequent words in the file in the order of their count of occurrences, with most frequent word first.
-In case there is a tie, the word with smaller alphabetical order comes first.
-If there are no more than 11 words in the file, all words should be printed.
-</p>
+<p>This program takes exactly one command line argument that is the name of the
+text file to be processed. If the wrong number of command line arguments is
+provided or the file cannot be opened, your program should display a clear
+error message and quit. You may assume that the file contains only lowercase
+letters and separators, i.e., spaces and newlines ('\n'). There won't be two
+consecutive separators. We'll define a <i>word</i> as a sequence of letters
+separated by spaces or newlines. You may also assume the file always contains
+at least one word.</p>
 
-<p>A skeleton class is provided for you; see <tt><a href="assignments/p5/files/WordFrequencyMain.java">WordFrequencyMain.java</a></tt>. The next sections will explain in detail the input and output requirements and restrictions, as well as sample cases.
-</p>
+<p>The program should display the 11 most frequent words in the file, one word
+on each line, with most frequent word first and the others in decreasing order.
+If two or more words have the same number of occurrences, they should be
+displayed alphabetically. If there are less than 11 different words in the
+file, output all the words in the order specified above.</p>
 
-<p>
-You can either design your own hash function or use Java's built-in hash functions.
-The running time of your program should be linear in the length of the input file under the assumption that the hash function produces no collision.
-Test your program against all sample cases provided below, and make sure they produce exactly the same results as sample outputs.
-All cases are designed to be computed within less than 1 second on a modern computer, so if it takes your program far more time than that, it's an indication that there is something wrong in your code.
-</p>
+<p>Test your program against the sample cases provided below, and make sure
+they produce exactly the same results as sample outputs. All cases are designed
+to be computed within less than 1 second on a modern computer, so if it takes
+your program far more time than that, it's an indication that there is something
+wrong in your code.</p>
 
-<h3>Input Requirements</h3>
-<p>
-The program should take a single command line argument which indicates the file name.
-There would always be exactly one such argument, and the file is guaranteed to be accessible.
-</p>
-
-<p>
-The file contains only lower case letters and separators, i.e. spaces and newlines ('\n').
-There won't be two consecutive separators.
-A <i>word</i> is defined to be a sequence of letters separated by separators.
-The file always contains at least one word.
-</p>
-
-<h3>Output Requirements</h3>
-<p>
-The program should print to standard output the top 11 most frequent word in the file, one word each line, in the order of their counts of occurrences, with most frequent word first.
-If two words have the same number of occurrences, the one alphabetically smaller should come first.
-If there are less than 11 distinct words in the file, output all the words in the order specified above.
-</p>
 
 <h3>Sample Cases</h3>
 <ol>
@@ -269,7 +195,6 @@ directory:
       <li><a href="assignments/p5/files/WordFrequencyMain.java"><tt>WordFrequencyMain.java</tt></a></li>
       <li><a href="assignments/p5/files/SimpleHashMap.java"><tt>SimpleHashMap.java</tt></a></li> 
       </ul>
-      <br></li>
       Do <b>not</b> use a package name for your program.
   </li>
   <li>Implement and thoroughly test your <tt>SimpleHashMap</tt> class.</li>
@@ -280,8 +205,8 @@ directory:
       in a terminal window as in this example: <dir><tt>javac *.java</tt></dir>
       and the run your program using <tt>java</tt> as in:
 
-      <dir><tt>java WordFrequencyMain inputFile</tt></dir>.
-</li>
+      <dir><tt>java WordFrequencyMain inputFile</tt></dir>
+  </li>
   <li>Make sure your program passes all sample cases.</li>
 
   <li>Submit your work for grading.</li>
